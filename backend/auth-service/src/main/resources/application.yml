@@ -1,0 +1,6 @@
+spring:
+  application:
+    # This name tells the Config Server to fetch 'auth-service.yml'
+    name: auth-service
+  config:
+    import: "optional:configserver:http://config-server:8888"

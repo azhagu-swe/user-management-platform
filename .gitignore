@@ -1,0 +1,70 @@
+# === GLOBAL IGNORE ===
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+**/logs/
+
+# Environment files
+.env
+.env.*
+
+
+# === BACKEND ===
+**/target/
+**/.classpath
+**/.project
+**/.settings/
+**/.idea/
+**/.vscode/
+
+# Maven
+**/pom.xml.tag
+**/pom.xml.releaseBackup
+**/pom.xml.versionsBackup
+**/release.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Java
+*.class
+*.jar
+*.war
+*.iml
+
+
+# === FRONTEND ===
+**/node_modules/
+**/.next/
+**/.turbo/
+**/out/
+**/.eslintcache
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+.next/
+out/
+coverage/
+
+
+# === DOCKER ===
+**/docker-compose.override.yml
+**/*.pid
+
+
+# === DATABASE ===
+*.db
+*.sql
+*.sqlite
+
+# === OTHERS ===
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

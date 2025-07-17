@@ -1,0 +1,24 @@
+# Node
+node_modules/
+
+# Next.js build outputs
+.next/
+out/
+
+# Other build outputs
+build/
+dist/
+coverage/
+
+# Package manager lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment files (though Prettier usually doesn't format them anyway)
+.env*
+
+# Generated files (if any)
+# e.g., generated-schema.graphql
+
+# Add any other files or directories you want Prettier to ignore

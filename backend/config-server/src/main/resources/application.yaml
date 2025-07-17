@@ -1,0 +1,26 @@
+server:
+  port: 8888 # The standard port for a config server
+
+spring:
+  application:
+    name: config-server
+  cloud:
+    config:
+      server:
+        git:
+          # The HTTPS URL of your private Git repository.
+          uri: https://github.com/azhagu-swe/user-config.git
+          # For private repos, provide credentials.
+          # Best Practice: Use a Personal Access Token (PAT) from GitHub as the password.
+          username: hello
+          password: "test password"
+          # default-label: main # The branch to use
+          clone-on-start: true
+          force-pull: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-admin:YourStrongPasswordHere@localhost:8761/eureka
+  instance:
+    prefer-ip-address: true

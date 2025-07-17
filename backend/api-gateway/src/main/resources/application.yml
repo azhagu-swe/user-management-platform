@@ -1,0 +1,9 @@
+spring:
+  application:
+    # This name is crucial. It tells the Config Server to fetch 'api-gateway.yml'
+    name: api-gateway
+  config:
+    # Import config from the server. 'configserver:...' is a special keyword.
+    import: "optional:configserver:http://config-server:8888"
+
+    

@@ -1,0 +1,77 @@
+version: '3.8'
+
+services:
+  # 1. PostgreSQL Database
+  # auth-db:
+  #   image: postgres:15
+  #   container_name: auth-db
+  #   environment:
+  #     - POSTGRES_USER=postgres
+  #     - POSTGRES_PASSWORD=postgres
+  #     - POSTGRES_DB=auth_db
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - auth_db_data:/var/lib/postgresql/data
+
+  # 2. Eureka Discovery Server
+  discovery-server:
+    build: ./discovery-server
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+    environment:
+      - EUREKA_DASHBOARD_PASSWORD=YourStrongPasswordHere
+
+  # 3. Config Server
+  config-server:
+    build: ./config-server
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    depends_on:
+      - discovery-server
+    environment:
+      # This points to your Git repository for configuration files
+      - SPRING_CLOUD_CONFIG_SERVER_GIT_URI=https://github.com/your-github-username/microservices-config-repo.git
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-admin:YourStrongPasswordHere@discovery-server:8761/eureka
+
+  # 4. Auth Service
+  auth-service:
+    build: ./auth-service
+    container_name: auth-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - auth-db
+      - discovery-server
+      - config-server
+    environment:
+      # This service will get its database config from the Config Server.
+      # You only need to override the hostname for Docker networking.
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://auth-db:5432/auth_db
+
+  # 5. Product Service
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - discovery-server
+      - config-server
+      
+  # 6. API Gateway
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-server
+      - config-server
+      - auth-service
+      - product-service
+
+volumes:
+  auth_db_data:

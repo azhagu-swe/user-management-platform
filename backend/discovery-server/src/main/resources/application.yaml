@@ -1,0 +1,27 @@
+# Set the server port. 8761 is the conventional default port for Eureka.
+server:
+  port: 8761
+
+# Give your application a name so it can be identified.
+
+spring:
+  security:
+    user:
+      name: eureka-admin # The username to access the dashboard
+      # It's best practice to load the password from an environment variable, not plain text.
+      password: ${EUREKA_DASHBOARD_PASSWORD:YourStrongPasswordHere}
+eureka:
+  client:
+    # A Eureka server is also a client, but it shouldn't register with itself.
+    # This setting tells it NOT to add itself to its own phone book.
+    register-with-eureka: false
+
+    # This setting tells it NOT to try and fetch the registry from another server.
+    # It IS the registry.
+    fetch-registry: false
+
+  server:
+    # This setting is useful for development with a single Eureka node.
+    # It tells the server not to wait for other replica nodes to connect on startup,
+    # which speeds up the startup time significantly.
+    wait-time-in-ms-when-sync-empty: 0
