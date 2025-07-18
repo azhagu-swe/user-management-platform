@@ -1,0 +1,71 @@
+#================================================================
+# AUTHENTICATION SERVICE - SPECIFIC CONFIGURATION
+#================================================================
+server:
+  port: 8081
+
+# --- Database & Persistence ---
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/allpings_db # Use service name
+    username: postgres
+    password: postgres # Load from env var
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+  jpa:
+    hibernate:
+      ddl-auto: validate # 'validate' is safer for production
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  # --- Flyway Database Migrations ---
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+  # --- Email Configuration ---
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME:your-email@gmail.com}
+    password: ${EMAIL_APP_PASSWORD:your-app-password}
+    properties:
+      mail.smtp:
+        auth: true
+        starttls.enable: true
+
+# --- Application & Security ---
+saas:
+  app:
+    jwtSecret: "${SAAS_JWT_SECRET:ThisIsAVeryLongSecretKeyThatIsAtLeastSixtyFourBytesLongForHS512Algorithm1234567890helloworldSoPleaseChangeIt}"
+    jwtExpirationMs: 3600000       # 1 hour
+    refreshExpirationMs: 86400000 # 24 hours
+
+app:
+  rate-limit:
+    auth: 10
+    api: 100
+  cors:
+    allowedOrigins: http://localhost:3000,https://mydomain.com
+    allowedMethods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+    allowedHeaders: Authorization,Cache-Control,Content-Type,X-Requested-With,Accept,Origin
+    exposedHeaders: Content-Disposition,X-Rate-Limit-Remaining,Retry-After
+    allowCredentials: true
+    maxAge: 3600
+  frontend:
+    resetPasswordUrl: https://yourfrontend.com/auth/reset-password?token=
+  defaultUserRoleName: StandardUser
+
+# --- Swagger / OpenAPI ---
+swagger:
+  username: ${SWAGGER_USER:admin}
+  password: ${SWAGGER_PASS:admin}
+
+# --- Logging ---
+logging:
+  level:
+    com.azhag_swe.saas: DEBUG
+    root: INFO

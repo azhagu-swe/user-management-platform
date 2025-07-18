@@ -1,0 +1,22 @@
+#================================================================
+# SHARED CONFIGURATION FOR ALL MICROSERVICES
+#================================================================
+
+# All services need to know where the Eureka server is.
+# Using eureka-server as the hostname is best practice for containerized environments.
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka-admin:YourStrongPasswordHere@localhost:8761/eureka
+  instance:
+    prefer-ip-address: true # Use IP address for registration
+
+# Expose common management endpoints for monitoring and health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus,metrics,bus-refresh
+  endpoint:
+    health:
+      show-details: always

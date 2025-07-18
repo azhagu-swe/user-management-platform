@@ -1,0 +1,76 @@
+#================================================================
+# API GATEWAY - SPECIFIC CONFIGURATION (Final Corrected Version)
+#================================================================
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    #================================================================
+    # === THE FIX IS HERE ===
+    # Configure the LoadBalancer to be case-insensitive.
+    # This allows 'lb://auth-service' (lowercase) to find 'AUTH-SERVICE'
+    # (uppercase) in Eureka.
+    #================================================================
+    loadbalancer:
+      cache:
+        enabled: false # Disabling cache can help during development
+    gateway:
+      discovery:
+        locator:
+          enabled: false
+          lower-case-service-id: true # Ensures discovered routes use lowercase
+      routes:
+        # NOTE: Your manual routes are still important for specific filters like JWT
+        - id: auth-service-route
+          uri: lb://auth-service
+          predicates:
+            - Path=/v1/api/auth/**, /v1/api/users/**, /v1/api/permissions/**, /v1/api/roles/**
+          filters:
+            - JwtAuthentication
+
+        - id: product-service-route
+          uri: lb://product-service
+          predicates:
+            - Path=/api/products/**
+          filters:
+            - JwtAuthentication
+
+#================================================================
+# SpringDoc OpenAPI configuration for the Gateway
+#================================================================
+springdoc:
+  # This property is now driven by the gateway.discovery.locator settings
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    # Use the default config-url which works with the discovery locator
+    config-url: /v3/api-docs/swagger-config
+    urls-primary-name: "All Microservices"
+
+#================================================================
+# Other configurations (CORS, JWT, etc.)
+#================================================================
+app:
+  cors:
+    allowedOrigins: http://localhost:3000
+    allowedMethods: GET,POST,PUT,DELETE,OPTIONS,PATCH
+    allowedHeaders: authorization,content-type,x-auth-token
+    allowCredentials: true
+    maxAge: 7200
+
+saas:
+  app:
+    jwtSecret: "${SAAS_JWT_SECRET:ThisIsAVeryLongSecretKeyThatIsAtLeastSixtyFourBytesLongForHS512Algorithm1234567890helloworldSoPleaseChangeIt}"
+
+#================================================================
+# Logging configuration
+#================================================================
+logging:
+  level:
+    org.springframework.cloud.gateway: INFO
+    org.springframework.security: INFO
+    org.springdoc: INFO
